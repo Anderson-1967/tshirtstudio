@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tshirtstudio</title>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        .top-bar { background-color: #a0674c; color: white; text-align: center; padding: 8px; font-size: 14px; }
+        .header { background-color: white; padding: 15px; display: flex; justify-content: center; align-items: center; position: relative; }
+        .logo { text-align: center; }
+        .logo img { max-height: 60px; }
+        .cart { font-weight: bold; color: #333; position: absolute; right: 20px; }
+        .menu { background-color: #222; text-align: center; padding: 15px; }
+        .menu a { color: white; text-decoration: none; margin: 0 15px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .dropdown { display: inline-block; position: relative; }
+        .dropdown-content { display: none; position: absolute; top: 100%; left: 0; background-color: #222; min-width: 200px; z-index: 1000; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        .dropdown-content a { display: block; padding: 12px 16px; text-decoration: none; color: white; font-weight: normal; text-align: left; cursor: pointer; }
+        .dropdown-content a:hover { background-color: #a0674c; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .banner-space { width: 100%; display: block; margin-bottom: 20px; }
+        .banner-space img { width: 100%; height: auto; display: block; }
+
+        .collection-title { text-align: center; font-size: 22px; font-weight: bold; margin: 20px 0; color: #333; }
+
+        .product-block { background-color: white; padding: 20px; display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .col-mockups { width: 15%; display: flex; flex-direction: column; }
+        .mockup-title { font-weight: bold; text-align: center; margin-bottom: 10px; font-size: 18px; }
+        .mockup-box { border: 4px solid transparent; padding: 5px; margin-bottom: 10px; }
+        .mockup-box img { width: 100%; display: block; cursor: pointer; }
+        .mockup-box.active { border: 4px solid orange; }
+        .info-lateral { width: 100%; margin-top: 15px; }
+        .info-lateral img { width: 100%; height: auto; }
+
+        .col-arts { width: 35%; display: flex; flex-direction: column; }
+        .estampa-title { font-weight: bold; text-align: center; margin-bottom: 10px; font-size: 18px; }
+        .art-item { display: flex; flex-direction: column; align-items: center; border: 4px solid transparent; padding: 10px; margin-bottom: 15px; background-color: #f9f9f9; }
+        .art-item img { width: 60%; height: auto; cursor: pointer; }
+        .art-item.active { border: 4px solid orange; }
+        .art-name { text-align: center; font-weight: bold; margin-top: 10px; font-size: 14px; }
+        .art-price { text-align: center; color: #a0674c; font-weight: bold; font-size: 14px; margin-top: 5px; }
+        .warning-space { width: 100%; margin-top: 15px; }
+        .warning-space img { width: 100%; height: auto; }
+
+        .col-main { width: 50%; display: flex; flex-direction: column; }
+        .main-box { border: 1px solid #ddd; background-color: #f9f9f9; display: flex; align-items: center; justify-content: center; padding: 15px; }
+        .main-box img { width: 85%; }
+        .main-info { margin-top: 20px; }
+        .main-info h2 { margin: 0; font-size: 22px; color: #333; }
+        .main-info p { margin: 5px 0; font-size: 14px; color: #555; }
+        .description { margin-top: 20px; border-top: 1px solid #ddd; padding-top: 20px; }
+        .description h3 { margin: 0 0 10px 0; font-size: 16px; }
+        .description p { font-size: 14px; line-height: 1.6; margin: 5px 0; }
+        .btn-buy-img, .btn-combo-img { display: block; width: 100%; max-width: 300px; cursor: pointer; margin: 10px 0; }
+        .btn-assista-img { display: block; width: 100%; cursor: pointer; margin: 10px 0; }
+
+        .termo-total { max-width: 1200px; margin: 0 auto; padding: 20px; background-color: white; }
+        .termo-total img { width: 100%; max-width: 100%; display: block; margin-top: -35px; }
+
+        .vitrine-title { text-align: center; font-size: 22px; font-weight: bold; margin: 20px 0 10px 0; color: #333; background-color: #e0e0e0; padding: 8px 0; width: 100%; }
+        .vitrine-titulo-categoria { text-align: center; font-size: 18px; font-weight: bold; margin: 20px 0 10px 0; color: #a0674c; text-transform: uppercase; }
+        .products-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; padding: 20px; max-width: 1200px; margin: 0 auto; background-color: white; }
+        .product-card { border: 1px solid #ddd; border-radius: 5px; padding: 10px; text-align: center; cursor: pointer; }
+        .product-card img { width: 100%; border-radius: 5px; }
+        .product-card.selected { border: 3px solid orange; }
+        .product-card .card-title { font-weight: bold; margin-top: 10px; font-size: 14px; }
+        .product-card .card-price { font-weight: bold; color: #a0674c; margin-top: 5px; font-size: 16px; }
+
+        .categoria-bloco { display: none; }
+        .categoria-bloco.ativa { display: block; }
+
+        .mobile-extras { display: none; }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; gap: 10px; padding: 10px; position: static; }
+            .logo { width: 100%; }
+            .logo img { max-height: 50px; }
+            .cart { position: static; }
+            .collection-title { margin: 8px 0; font-size: 18px; padding: 4px 0; }
+            .menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 8px; }
+            .menu a { margin: 0; padding: 10px 4px; font-size: 12px; display: block; text-align: center; }
+            .dropdown { position: relative; }
+            .dropdown-content { position: absolute; top: 100%; left: 0; background-color: #ffd700 !important; min-width: 180px; z-index: 2000; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+            .dropdown-content a { color: #222 !important; background-color: #ffd700; padding: 10px 12px; font-size: 12px; border-bottom: 1px solid #e6be00; text-align: left; }
+            .dropdown-content a:hover { background-color: #e6be00; }
+            .banner-space { margin-bottom: 15px; }
+            .banner-space img { width: 100%; height: auto; display: block; }
+            .info-lateral.desktop-only, .warning-space.desktop-only, .video-assista.desktop-only, .termo-total.desktop-only { display: none !important; }
+            .mobile-extras { display: block !important; }
+            .product-block { flex-direction: column; padding: 12px; gap: 15px; }
+            .col-mockups { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .mockup-title { grid-column: 1 / -1; font-size: 18px; margin-bottom: 5px; text-align: center; }
+            .mockup-box { margin-bottom: 0; padding: 3px; }
+            .col-arts { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .estampa-title { grid-column: 1 / -1; font-size: 18px; margin-bottom: 5px; margin-top: 5px; text-align: center; }
+            .art-item { margin-bottom: 0; padding: 6px; }
+            .art-item img { width: 100%; }
+            .art-name { font-size: 11px; margin-top: 5px; }
+            .art-price { font-size: 12px; margin-top: 3px; }
+            .col-main { width: 100%; margin-top: 10px; }
+            .main-info h2 { font-size: 20px; }
+            .btn-buy-img, .btn-combo-img, .btn-assista-img { max-width: 100%; }
+            .mobile-extras { width: 100%; margin-top: 15px; background-color: white; padding: 0; }
+            .mobile-extras img { width: 100%; height: auto; display: block; margin-bottom: 10px; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+            .vitrine-titulo-categoria { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">ESTAMPAS PROFISSIONAIS PARA CONFECÇÃO</div>
+
+    <div class="header">
+        <div class="logo"><img src="site/logo.png" alt="tshirtstudio"></div>
+        <span class="cart">🛒 CARRINHO</span>
+    </div>
+
+    <div class="menu">
+        <a onclick="mostrarCategoria('localizado-simples'); window.scrollTo(0,0)">HOME</a>
+        <div class="dropdown">
+            <a>LOCALIZADO</a>
+            <div class="dropdown-content">
+                <a onclick="mostrarCategoria('localizado-simples'); trocarProduto(null, 1)">LOCALIZADO SIMPLES</a>
+                <a onclick="mostrarCategoria('localizado-medio'); trocarProduto(null, 4)">LOCALIZADO MÉDIO</a>
+                <a onclick="mostrarCategoria('localizado-complexo'); trocarProduto(null, 8)">LOCALIZADO COMPLEXO</a>
+            </div>
+        </div>
+        <a>CORRIDO</a>
+        <div class="dropdown">
+            <a>SURFWEAR</a>
+            <div class="dropdown-content">
+                <a onclick="mostrarCategoria('surf-simples'); trocarProduto(null, 12)">SURFWEAR SIMPLES</a>
+                <a onclick="mostrarCategoria('surf-medio'); trocarProduto(null, 13)">SURFWEAR MÉDIO</a>
+                <a onclick="mostrarCategoria('surf-complexo'); trocarProduto(null, 14)">SURFWEAR COMPLEXO</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a>STREETWEAR</a>
+            <div class="dropdown-content">
+                <a onclick="mostrarCategoria('street-medio'); trocarProduto(null, 15)">STREETWEAR MÉDIO</a>
+            </div>
+        </div>
+        <a>COUNTRY</a>
+        <a>NAUTICA</a>
+        <a>RELIGIAO</a>
+        <a>CARNAVAL</a>
+        <a>PROMOCIONAL</a>
+    </div>
+
+    <div class="banner-space">
+        <img src="site/x_banner_botoes_videos/banner_superior/1_Banner_ordem_imagens/banner_final_01.gif" alt="Banner">
+    </div>
+
+    <div class="collection-title">DESTAQUES DA COLEÇÃO</div>
+
+    <div class="product-block">
+        <div class="col-mockups">
+            <div class="mockup-title">MOCKUPS</div>
+            <div class="mockup-box active" id="mockup1"><img src="site/localizados/01_localizado_simples/0001_mockups_simples/mockup_1.png" onclick="trocarMockup(this, 'A')"></div>
+            <div class="mockup-box" id="mockup2"><img src="site/localizados/01_localizado_simples/0001_mockups_simples/mockup_2.png" onclick="trocarMockup(this, 'B')"></div>
+            <div class="mockup-box" id="mockup3"><img src="site/localizados/01_localizado_simples/0001_mockups_simples/mockup_3.png" onclick="trocarMockup(this, 'C')"></div>
+            <div class="info-lateral desktop-only"><img src="site/x_banner_botoes_videos/info_lateral.png" alt="O que é DTF"></div>
+        </div>
+        <div class="col-arts">
+            <div class="estampa-title">ESTAMPAS</div>
+            <div class="art-item" id="estampa1"><img src="site/localizados/01_localizado_simples/0001_mockups_simples/estampa_1.png" onclick="trocarEstampa(this, 'A')"><div class="art-name">Localizado 0001</div><div class="art-price">R$ 35,00</div></div>
+            <div class="art-item" id="estampa2"><img src="site/localizados/01_localizado_simples/0001_mockups_simples/estampa_2.png" onclick="trocarEstampa(this, 'B')"><div class="art-name">Localizado 0002</div><div class="art-price">R$ 35,00</div></div>
+            <div class="art-item" id="estampa3"><img src="site/localizados/01_localizado_simples/0001_mockups_simples/estampa_3.png" onclick="trocarEstampa(this, 'C')"><div class="art-name">Localizado 0003</div><div class="art-price">R$ 35,00</div></div>
+            <div class="warning-space desktop-only"><img src="site/x_banner_botoes_videos/atencao.png" alt="Atenção"></div>
+        </div>
+        <div class="col-main">
+            <div class="main-box"><img src="site/localizados/01_localizado_simples/0001_mockups_simples/mockup_1.png" id="img01"></div>
+            <div class="main-info">
+                <h2 id="tituloProduto">Localizado 0001</h2>
+                <p id="precoProduto" style="color: #a0674c; font-weight: bold; font-size: 28px; margin: 5px 0;">R$ 35,00</p>
+                <p>Escolha a cor</p>
+                <a href="https://pay.hotmart.com/C107759357N" id="linkCompra" target="_blank"><img src="site/x_banner_botoes_videos/botao_comprar.png" class="btn-buy-img"></a>
+                <a href="https://pay.hotmart.com/G107830722C" id="linkCombo" target="_blank"><img src="site/x_banner_botoes_videos/botao_combo.png" class="btn-combo-img"></a>
+                <div class="description">
+                    <h3>DESCRIÇÃO:</h3>
+                    <p><strong>DIMENSÕES DO DESENHO:</strong> <span id="dimensoes">23 cm larg. x 20,63 cm alt.</span></p>
+                    <p><strong>SOBRE O PRODUTO:</strong> Arquivo 100% digital em PNG (300 DPI). Pronto para impressão em qualquer tecido, com qualidade profissional.</p>
+                    <p><strong>COMO FUNCIONA A ENTREGA?</strong> Assim que o seu pagamento for confirmado, o arquivo será enviado automaticamente para o endereço de e-mail informado no momento da compra. Por favor, verifique se digitou seu e-mail corretamente antes de finalizar o pedido.</p>
+                </div>
+                <div class="video-assista desktop-only">
+                    <a href="https://www.youtube.com/watch?v=bfDU9XLmSGw&t=338s" target="_blank"><img src="site/x_banner_botoes_videos/botao_assista.png" class="btn-assista-img"></a>
+                </div>
+            </div>
+        </div>
+        <div class="mobile-extras">
+            <img src="site/x_banner_botoes_videos/atencao_celular.png" alt="Atenção">
+            <img src="site/x_banner_botoes_videos/termo_licenca_celular.png" alt="Termo de Uso">
+            <img src="site/x_banner_botoes_videos/info_lateral_celular.png" alt="O que é DTF">
+            <a href="https://www.youtube.com/watch?v=bfDU9XLmSGw&t=338s" target="_blank"><img src="site/x_banner_botoes_videos/botao_assista.png" class="btn-assista-img"></a>
+        </div>
+    </div>
+
+    <div class="termo-total desktop-only">
+        <img src="site/x_banner_botoes_videos/termo_licenca.png" style="margin-top: -35px;">
+    </div>
+
+    <div class="vitrine-title">VITRINE</div>
+
+    <div id="cat-localizado-simples" class="categoria-bloco ativa">
+        <div class="vitrine-titulo-categoria">LOCALIZADO SIMPLES</div>
+        <div class="products-grid">
+            <div class="product-card selected" onclick="trocarProduto(this, 1)"><img src="site/localizados/01_localizado_simples/0001_mockups_simples/mockup_1.png"><div class="card-title">Localizado 0001</div><div class="card-price">R$ 35,00</div></div>
+            <div class="product-card" onclick="trocarProduto(this, 2)"><img src="site/localizados/01_localizado_simples/0002_mockups_simples/mockup_1.png"><div class="card-title">Localizado 0002</div><div class="card-price">R$ 35,00</div></div>
+            <div class="product-card" onclick="trocarProduto(this, 3)"><img src="site/localizados/01_localizado_simples/0003_mockups_simples/mockup_1.png"><div class="card-title">Localizado 0003</div><div class="card-price">R$ 35,00</div></div>
+        </div>
+    </div>
+
+    <div id="cat-localizado-medio" class="categoria-bloco">
+        <div class="vitrine-titulo-categoria">LOCALIZADO MÉDIO</div>
+        <div class="products-grid">
+            <div class="product-card" onclick="trocarProduto(this, 4)"><img src="site/localizados/02_localizado_medio/0001_mockups_medio/mockup_1.png"><div class="card-title">Localizado Médio 0001</div><div class="card-price">R$ 70,00</div></div>
+            <div class="product-card" onclick="trocarProduto(this, 5)"><img src="site/localizados/02_localizado_medio/0002_mockups_medio/mockup_1.png"><div class="card-title">Localizado Médio 0002</div><div class="card-price">R$ 70,00</div></div>
+            <div class="product-card" onclick="trocarProduto(this, 6)"><img src="site/localizados/02_localizado_medio/0003_mockups_medio/mockup_1.png"><div class="card-title">Localizado Médio 0003</div><div class="card-price">R$ 70,00</div></div>
+            <div class="product-card" onclick="trocarProduto(this, 7)"><img src="site/localizados/02_localizado_medio/0004_mockups_medio/mockup_1.png"><div class="card-title">Localizado Médio 0004</div><div class="card-price">R$ 70,00</div></div>
+        </div>
+    </div>
+
+    <div id="cat-localizado-complexo" class="categoria-bloco">
+        <div class="vitrine-titulo-categoria">LOCALIZADO COMPLEXO</div>
+        <div class="products-grid">
+            <div class="product-card" onclick="trocarProduto(this, 8)"><img src="site/localizados/03_localizado_complexo/0001_mockups_complexo/mockup_1.png"><div class="card-title">Localizado Complexo 0001</div><div class="card-price">R$ 90,00</div></div>
+            <div class="product-card" onclick="trocarProduto(this, 9)"><img src="site/localizados/03_localizado_complexo/0002_mockups_complexo/mockup_1.png"><div class="card-title">Localizado Complexo 0002</div><div class="card-price">R$ 90,00</div></div>
+            <div class="product-card" onclick="trocarProduto(this, 10)"><img src="site/localizados/03_localizado_complexo/0003_mockups_complexo/mockup_1.png"><div class="card-title">Localizado Complexo 0003</div><div class="card-price">R$ 90,00</div></div>
+            <div class="product-card" onclick="trocarProduto(this, 11)"><img src="site/localizados/03_localizado_complexo/0004_mockups_complexo/mockup_1.png"><div class="card-title">Localizado Complexo 0004</div><div class="card-price">R$ 90,00</div></div>
+        </div>
+    </div>
+
+    <div id="cat-surf-simples" class="categoria-bloco">
+        <div class="vitrine-titulo-categoria">SURFWEAR SIMPLES</div>
+        <div class="products-grid">
+            <div class="product-card" onclick="trocarProduto(this, 12)"><img src="site/surfwear/0001_mockups_simples/mockup_1.png"><div class="card-title">Surfwear Simples 0001</div><div class="card-price">R$ 35,00</div></div>
+        </div>
+    </div>
+
+    <div id="cat-surf-medio" class="categoria-bloco">
+        <div class="vitrine-titulo-categoria">SURFWEAR MÉDIO</div>
+        <div class="products-grid">
+            <div class="product-card" onclick="trocarProduto(this, 13)"><img src="site/surfwear/0002_mockups_medio/mockup_1.png"><div class="card-title">Surfwear Médio 0002</div><div class="card-price">R$ 70,00</div></div>
+        </div>
+    </div>
+
+    <div id="cat-surf-complexo" class="categoria-bloco">
+        <div class="vitrine-titulo-categoria">SURFWEAR COMPLEXO</div>
+        <div class="products-grid">
+            <div class="product-card" onclick="trocarProduto(this, 14)"><img src="site/surfwear/0003_mockups_complexo/mockup_1.png"><div class="card-title">Surfwear Complexo 0003</div><div class="card-price">R$ 90,00</div></div>
+        </div>
+    </div>
+
+    <div id="cat-street-medio" class="categoria-bloco">
+        <div class="vitrine-titulo-categoria">STREETWEAR MÉDIO</div>
+        <div class="products-grid">
+            <div class="product-card" onclick="trocarProduto(this, 15)"><img src="site/streetwear/02_streetwear_medio/0001_mockups_medio/mockup_1.png"><div class="card-title">Streetwear Médio 0001</div><div class="card-price">R$ 70,00</div></div>
+        </div>
+    </div>
+
+    <script>
+        var produtoAtual = 1;
+
+        // --- LINKS ATUALIZADOS ---
+        // Links de todas as cores (A, B, C) e Combos para cada produto
+        var linksHotmart = {
+            1:  { A: "https://pay.hotmart.com/C107759357N", B: "https://pay.hotmart.com/X107817379U", C: "https://pay.hotmart.com/B107817733K", combo: "https://pay.hotmart.com/G107830722C" },
+            2:  { A: "https://pay.hotmart.com/Y107830981P", B: "https://pay.hotmart.com/T107831043D", C: "https://pay.hotmart.com/K107831423V", combo: "https://pay.hotmart.com/X107831514S" },
+            3:  { A: "https://pay.hotmart.com/N107832011O", B: "https://pay.hotmart.com/F107832101P", C: "https://pay.hotmart.com/E107832160S", combo: "https://pay.hotmart.com/M107832233B" },
+            4:  { A: "https://pay.hotmart.com/X107833132P", B: "https://pay.hotmart.com/W107833199D", C: "https://pay.hotmart.com/H107833263V", combo: "https://pay.hotmart.com/A107833340W" },
+            5:  { A: "https://pay.hotmart.com/X107833547T", B: "https://pay.hotmart.com/W107835025J", C: "https://pay.hotmart.com/G107833632D", combo: "https://pay.hotmart.com/U107836006C" },
+            6:  { A: "https://pay.hotmart.com/Y107849898M", B: "https://pay.hotmart.com/E107850039D", C: "https://pay.hotmart.com/P107850123R", combo: "https://pay.hotmart.com/G107849536I" },
+            7:  { A: "https://pay.hotmart.com/C107850202U", B: "https://pay.hotmart.com/N107850263T", C: "https://pay.hotmart.com/A107850300Q", combo: "https://pay.hotmart.com/T107849782N" },
+            8:  { A: "https://pay.hotmart.com/H107850365M", B: "https://pay.hotmart.com/I107850438J", C: "https://pay.hotmart.com/E107850499T", combo: "https://pay.hotmart.com/A107850977X" },
+            9:  { A: "https://pay.hotmart.com/V107850564Q", B: "https://pay.hotmart.com/R107850653J", C: "https://pay.hotmart.com/O107850732N", combo: "https://pay.hotmart.com/X107851035E" },
+            10: { A: "https://pay.hotmart.com/E107851263H", B: "https://pay.hotmart.com/V107851316K", C: "https://pay.hotmart.com/U107851347N", combo: "https://pay.hotmart.com/E107851100F" },
+            11: { A: "https://pay.hotmart.com/V107851380H", B: "https://pay.hotmart.com/U107851410V", C: "https://pay.hotmart.com/R107851448W", combo: "https://pay.hotmart.com/D107851143S" },
+            // SURFWEAR SIMPLES
+            12: { A: "https://pay.hotmart.com/H107852261L", B: "https://pay.hotmart.com/Q107852307Q", C: "https://pay.hotmart.com/R107852361R", combo: "https://pay.hotmart.com/F107856388W" },
+            // SURFWEAR MÉDIO
+            13: { A: "https://pay.hotmart.com/B107855930V", B: "https://pay.hotmart.com/K107855990K", C: "https://pay.hotmart.com/V107856022N", combo: "https://pay.hotmart.com/I107856490C" },
+            // SURFWEAR COMPLEXO
+            14: { A: "https://pay.hotmart.com/Q107856068U", B: "https://pay.hotmart.com/S107856114V", C: "https://pay.hotmart.com/A107856187C", combo: "https://pay.hotmart.com/L107856603D" },
+            // STREETWEAR MÉDIO
+            15: { A: "https://pay.hotmart.com/F107851640E", B: "https://pay.hotmart.com/J107851791L", C: "https://pay.hotmart.com/A107851836I", combo: "https://pay.hotmart.com/M107852070V" }
+        };
+
+        function mostrarCategoria(categoria) {
+            document.querySelectorAll('.categoria-bloco').forEach(bloco => bloco.classList.remove('ativa'));
+            var el = document.getElementById('cat-' + categoria);
+            if (el) el.classList.add('ativa');
+        }
+
+        function trocarProduto(el, numero) {
+            document.querySelectorAll('.product-card').forEach(card => card.classList.remove('selected'));
+            if (el) { el.classList.add('selected'); }
+
+            produtoAtual = numero;
+
+            var produtos = {
+                1:  { pasta: "localizados/01_localizado_simples/0001_mockups_simples", titulo: "Localizado 0001", preco: "R$ 35,00", dim: "23 cm larg. x 20,63 cm alt." },
+                2:  { pasta: "localizados/01_localizado_simples/0002_mockups_simples", titulo: "Localizado 0002", preco: "R$ 35,00", dim: "25 cm larg. x 29,56 cm alt." }, 
+                3:  { pasta: "localizados/01_localizado_simples/0003_mockups_simples", titulo: "Localizado 0003", preco: "R$ 35,00", dim: "23 cm larg. x 17,73 cm alt." },
+                4:  { pasta: "localizados/02_localizado_medio/0001_mockups_medio", titulo: "Localizado Médio 0001", preco: "R$ 70,00", dim: "25 cm larg. x 23,19 cm alt." },
+                5:  { pasta: "localizados/02_localizado_medio/0002_mockups_medio", titulo: "Localizado Médio 0002", preco: "R$ 70,00", dim: "25,21 cm larg. x 24,91 cm alt." },
+                6:  { pasta: "localizados/02_localizado_medio/0003_mockups_medio", titulo: "Localizado Médio 0003", preco: "R$ 70,00", dim: "22 cm" },
+                7:  { pasta: "localizados/02_localizado_medio/0004_mockups_medio", titulo: "Localizado Médio 0004", preco: "R$ 70,00", dim: "19,30 cm larg. x 28 cm alt." },
+                8:  { pasta: "localizados/03_localizado_complexo/0001_mockups_complexo", titulo: "Localizado Complexo 0001", preco: "R$ 90,00", dim: "23,33 cm larg. x 34,76 cm alt." },
+                9:  { pasta: "localizados/03_localizado_complexo/0002_mockups_complexo", titulo: "Localizado Complexo 0002", preco: "R$ 90,00", dim: "23,18 cm larg. x 30 cm alt." },
+                10: { pasta: "localizados/03_localizado_complexo/0003_mockups_complexo", titulo: "Localizado Complexo 0003", preco: "R$ 90,00", dim: "26,5 cm larg. x 23,45 cm alt." },
+                11: { pasta: "localizados/03_localizado_complexo/0004_mockups_complexo", titulo: "Localizado Complexo 0004", preco: "R$ 90,00", dim: "26,14 cm larg. x 28,28 cm alt." },
+                12: { pasta: "surfwear/0001_mockups_simples", titulo: "Surfwear Simples 0001", preco: "R$ 35,00", dim: "26 cm larg. x 13,70 cm alt." },
+                13: { pasta: "surfwear/0002_mockups_medio", titulo: "Surfwear Médio 0002", preco: "R$ 70,00", dim: "25,01 cm larg. x 27,06 cm alt." },
+                14: { pasta: "surfwear/0003_mockups_complexo", titulo: "Surfwear Complexo 0003", preco: "R$ 90,00", dim: "25 cm larg. x 29,28 cm alt." },
+                15: { pasta: "streetwear/02_streetwear_medio/0001_mockups_medio", titulo: "Streetwear Médio 0001", preco: "R$ 70,00", dim: "25 cm larg. x 25,80 cm alt." }
+            };
+
+            var p = produtos[numero];
+            if (!p) return;
+
+            var caminho = "site/" + p.pasta;
+
+            // Reseta seleção: mockup 1 ativo, todas as estampas sem borda
+            document.querySelectorAll('.mockup-box').forEach(box => box.classList.remove('active'));
+            document.querySelectorAll('.art-item').forEach(item => item.classList.remove('active'));
+            document.getElementById('mockup1').classList.add('active');
+
+            document.getElementById('img01').src = caminho + "/mockup_1.png";
+            document.getElementById('tituloProduto').innerText = p.titulo;
+            document.getElementById('precoProduto').innerText = p.preco;
+            document.getElementById('dimensoes').innerText = p.dim;
+
+            // Link compra = A | Combo = combo
+            document.getElementById('linkCompra').href = linksHotmart[numero].A;
+            if (linksHotmart[numero].combo && linksHotmart[numero].combo !== "") {
+                document.getElementById('linkCombo').href = linksHotmart[numero].combo;
+            } else {
+                document.getElementById('linkCombo').href = "#";
+            }
+
+            // Atualiza as imagens dos Mockups (coluna esquerda)
+            var mockupImgs = document.querySelectorAll('.col-mockups .mockup-box img');
+            mockupImgs[0].src = caminho + "/mockup_1.png";
+            mockupImgs[1].src = caminho + "/mockup_2.png";
+            mockupImgs[2].src = caminho + "/mockup_3.png";
+
+            // Atualiza as imagens das Estampas (coluna central)
+            var estampaImgs = document.querySelectorAll('.col-arts .art-item img');
+            estampaImgs[0].src = caminho + "/estampa_1.png";
+            estampaImgs[1].src = caminho + "/estampa_2.png";
+            estampaImgs[2].src = caminho + "/estampa_3.png";
+
+            // Atualiza os preços nas estampas
+            var precos = document.querySelectorAll('.col-arts .art-item .art-price');
+            precos[0].innerText = p.preco;
+            precos[1].innerText = p.preco;
+            precos[2].innerText = p.preco;
+        }
+
+        // Clicou no MOCKUP: borda vai pro mockup, tira das estampas
+        function trocarMockup(el, cor) {
+            document.querySelectorAll('.mockup-box').forEach(box => box.classList.remove('active'));
+            document.querySelectorAll('.art-item').forEach(item => item.classList.remove('active'));
+            el.parentElement.classList.add('active');
+            document.getElementById('img01').src = el.src;
+            
+            // Atualiza o link de compra para a cor correspondente
+            if (linksHotmart[produtoAtual][cor] && linksHotmart[produtoAtual][cor] !== "#") {
+                document.getElementById('linkCompra').href = linksHotmart[produtoAtual][cor];
+            } else {
+                document.getElementById('linkCompra').href = "#";
+            }
+        }
+
+        // Clicou na ESTAMPA: borda vai pra estampa, tira dos mockups
+        function trocarEstampa(el, cor) {
+            document.querySelectorAll('.mockup-box').forEach(box => box.classList.remove('active'));
+            document.querySelectorAll('.art-item').forEach(item => item.classList.remove('active'));
+            el.parentElement.classList.add('active');
+            document.getElementById('img01').src = el.src;
+            
+            // Atualiza o link de compra para a cor correspondente
+            if (linksHotmart[produtoAtual][cor] && linksHotmart[produtoAtual][cor] !== "#") {
+                document.getElementById('linkCompra').href = linksHotmart[produtoAtual][cor];
+            } else {
+                document.getElementById('linkCompra').href = "#";
+            }
+        }
+    </script>
+
+</body>
+</html>
