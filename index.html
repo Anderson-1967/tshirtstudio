@@ -54,6 +54,9 @@
         .description p { font-size: 14px; line-height: 1.6; margin: 5px 0; }
         .btn-buy-img, .btn-combo-img { display: block; width: 100%; max-width: 300px; cursor: pointer; margin: 10px 0; }
         .btn-assista-img { display: block; width: 100%; cursor: pointer; margin: 10px 0; }
+        
+        /* NOVO: Banner de contato */
+        .btn-contato-img { display: block; width: 100%; max-width: 300px; cursor: pointer; margin: 10px 0; }
 
         .termo-total { max-width: 1200px; margin: 0 auto; padding: 20px; background-color: white; }
         .termo-total img { width: 100%; max-width: 100%; display: block; margin-top: -35px; }
@@ -86,7 +89,7 @@
             .dropdown-content a:hover { background-color: #e6be00; }
             .banner-space { margin-bottom: 15px; }
             .banner-space img { width: 100%; height: auto; display: block; }
-            .info-lateral.desktop-only, .warning-space.desktop-only, .video-assista.desktop-only, .termo-total.desktop-only { display: none !important; }
+            .info-lateral.desktop-only, .warning-space.desktop-only, .video-assista.desktop-only, .termo-total.desktop-only, .contato-desktop { display: none !important; }
             .mobile-extras { display: block !important; }
             .product-block { flex-direction: column; padding: 12px; gap: 15px; }
             .col-mockups { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
@@ -100,7 +103,7 @@
             .art-price { font-size: 12px; margin-top: 3px; }
             .col-main { width: 100%; margin-top: 10px; }
             .main-info h2 { font-size: 20px; }
-            .btn-buy-img, .btn-combo-img, .btn-assista-img { max-width: 100%; }
+            .btn-buy-img, .btn-combo-img, .btn-assista-img, .btn-contato-img { max-width: 100%; }
             .mobile-extras { width: 100%; margin-top: 15px; background-color: white; padding: 0; }
             .mobile-extras img { width: 100%; height: auto; display: block; margin-bottom: 10px; }
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
@@ -187,6 +190,10 @@
                 <div class="video-assista desktop-only">
                     <a href="https://www.youtube.com/watch?v=Hz5Be0f6WdU" target="_blank"><img src="x_banner_botoes_videos/botao_assista.png" class="btn-assista-img"></a>
                 </div>
+                <!-- NOVO: Banner de contato no desktop -->
+                <div class="contato-desktop">
+                    <a href="mailto:atendimento.desenho@proton.me?subject=Dúvida sobre DTF - Tshirt Studio&body=Olá, tenho uma dúvida sobre os produtos DTF."><img src="x_banner_botoes_videos/contato_suporte.png" class="btn-contato-img" alt="Contato - Suporte"></a>
+                </div>
             </div>
         </div>
         <div class="mobile-extras">
@@ -194,6 +201,8 @@
             <img src="x_banner_botoes_videos/termo_licenca_celular.png" alt="Termo de Uso">
             <img src="x_banner_botoes_videos/info_lateral_celular.png" alt="O que é DTF">
             <a href="https://www.youtube.com/watch?v=Hz5Be0f6WdU" target="_blank"><img src="x_banner_botoes_videos/botao_assista.png" class="btn-assista-img"></a>
+            <!-- NOVO: Banner de contato no mobile -->
+            <a href="mailto:atendimento.desenho@proton.me?subject=Dúvida sobre DTF - Tshirt Studio&body=Olá, tenho uma dúvida sobre os produtos DTF."><img src="x_banner_botoes_videos/contato_suporte.png" class="btn-contato-img" alt="Contato - Suporte"></a>
         </div>
     </div>
 
@@ -314,7 +323,7 @@
             var p = produtos[numero];
             if (!p) return;
 
-            var caminho = p.pasta;
+            var caminho = "" + p.pasta;
 
             document.querySelectorAll('.mockup-box').forEach(box => box.classList.remove('active'));
             document.querySelectorAll('.art-item').forEach(item => item.classList.remove('active'));
